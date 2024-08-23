@@ -14,4 +14,8 @@ class Visitor extends Model
         'phone',
         'company',
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

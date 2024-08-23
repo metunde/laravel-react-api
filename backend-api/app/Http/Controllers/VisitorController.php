@@ -4,9 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Visitor;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Gate;
 
-class VisitorController extends Controller
+class VisitorController extends Controller implements HasMiddleware
 {
+
+    public static function middleware(){
+        return [
+            new Middleware('auth:sanctum', except: ['index', 'show'])
+        ];
+    } 
     /**
      * Display a listing of the resource.
      */
@@ -21,13 +30,16 @@ class VisitorController extends Controller
     public function store(Request $request)
     {
       $field =  $request->validate([
-            'full-name' => 'required|max:255',
+            'name' => 'required|max:255',
             'email' => 'required',
             'phone' => 'required',
             'company' => 'required',
         ]);
 
-        $visitor = Visitor::create($field);
+        $field['full-name'] = $field['name'];
+         unset($field['name']);
+
+        $visitor = $request->user()->visitor()->create($field);
         return response()->json($visitor, 201);
 
        // return  $visitor;
@@ -46,6 +58,9 @@ class VisitorController extends Controller
      */
     public function update(Request $request, Visitor $visitor)
     {
+
+        Gate::authorize('modify', $visitor);
+
         $field =  $request->validate([
             'full-name' => 'required|max:255',
             'email' => 'required',
@@ -63,6 +78,7 @@ class VisitorController extends Controller
      */
     public function destroy(Visitor $visitor)
     {
+        Gate::authorize('modify', $visitor);
         $visitor->delete();
 
         return ['message' => 'the visitor record has been deleted'];
