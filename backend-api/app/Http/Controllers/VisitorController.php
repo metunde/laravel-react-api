@@ -21,7 +21,17 @@ class VisitorController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        return Visitor::all();
+        $visitors = Visitor::all()->map(function ($visitor) {
+            return [
+                'id' => $visitor->id,
+                'name' => $visitor['full-name'], // Map 'full-name' to 'name'
+                'email' => $visitor->email,
+                'phone' => $visitor->phone,
+                'company' => $visitor->company,
+            ];
+        });
+    
+        return response()->json($visitors);
     }
 
     /**
@@ -50,6 +60,8 @@ class VisitorController extends Controller implements HasMiddleware
      */
     public function show(Visitor $visitor)
     {
+
+      
         return $visitor;
     }
 
@@ -59,14 +71,17 @@ class VisitorController extends Controller implements HasMiddleware
     public function update(Request $request, Visitor $visitor)
     {
 
-        Gate::authorize('modify', $visitor);
+    
 
         $field =  $request->validate([
-            'full-name' => 'required|max:255',
+            'name' => 'required|max:255',
             'email' => 'required',
             'phone' => 'required',
             'company' => 'required',
         ]);
+
+        $field['full-name'] = $field['name'];
+        unset($field['name']);
 
         $visitor->update($field);
 
@@ -78,7 +93,7 @@ class VisitorController extends Controller implements HasMiddleware
      */
     public function destroy(Visitor $visitor)
     {
-        Gate::authorize('modify', $visitor);
+        
         $visitor->delete();
 
         return ['message' => 'the visitor record has been deleted'];

@@ -40,7 +40,7 @@ nav("/")
     <Link to="/" className="nav-link">Home</Link>
     <Link to="/visitors" className="nav-link">Visitors</Link>
     <Link to="/visitors" className="nav-link">Visits</Link>
-    <Link to="/visitors" className="nav-link">Staff</Link>
+    <Link to="/hosts" className="nav-link">Staff</Link>
     </div>
     
  

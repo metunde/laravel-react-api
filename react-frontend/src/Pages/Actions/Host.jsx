@@ -1,35 +1,35 @@
 import { useState, useEffect } from "react";
 
 
-export default function Visitors() {
+export default function Hosts() {
 
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         phone: "",
-        company: ""
-
+        department: "",
+        position: ""
     });
 
-    const [visitorData, setVisitorData] = useState(null);
+    const [hostData, setHostData] = useState(null);
     const [popup, setPopup] = useState(false);
     const [delModal, setDelModal] = useState(false);
     const [isAdd, setIsAdd] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
     const [token] = useState(localStorage.getItem("token"));
-    const [visitorId, setVisitorId] = useState(null);
+    const [hostId, setHostId] = useState(null);
 
 
     const showModal = () => {
 
-        setFormData(visitorData)
-        console.log(visitorData)
+        setFormData(hostData)
+        console.log(hostData)
         setPopup(true)
     }
 
     const getId = (id) => {
-        setVisitorId(id);
-        console.log("Selected Visitor ID:", id);
+        setHostId(id);
+        console.log("Selected Host ID:", id);
     };
 
     const closeModal = () => {
@@ -38,10 +38,10 @@ export default function Visitors() {
         setIsAdd(false);
     }
 
-    const createVisitor = async (e) => {
+    const createHost = async (e) => {
         e.preventDefault()
 
-        const res = await fetch("api/visitor", {
+        const res = await fetch("api/host", {
             headers: {
                 Authorization: `Bearer ${token}`
             },
@@ -53,22 +53,23 @@ export default function Visitors() {
         console.log(data)
         setFormData({})
         setPopup(false)
-        getVisitor()
+        getHost()
     }
 
 
-    const getVisitor = async () => {
+    const getHost = async () => {
       
-            const res = await fetch("api/visitor", {
+            const res = await fetch("api/host", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-                method: "GET", 
+                method: "GET",
             });
 
+            
             const data = await res.json();
 
-            setVisitorData(data)
+            setHostData(data)
 
 
 
@@ -76,9 +77,9 @@ export default function Visitors() {
       
     };
 
-    const updateVisitor = async (visitorId) => {
+    const updateHost = async (hostId) => {
     
-            const res = await fetch(`api/visitor/${visitorId}`, {
+            const res = await fetch(`api/host/${hostId}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -91,15 +92,15 @@ export default function Visitors() {
             console.log(data.id)
             console.log(data);
             setPopup(false);
-            getVisitor(); 
+            getHost(); 
      
        
     };
 
 
-    const deleteVisitor = async (id) => {
+    const deleteHost = async (id) => {
 
-        const res = await fetch(`api/visitor/${id}`, {
+        const res = await fetch(`api/host/${id}`, {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -108,19 +109,19 @@ export default function Visitors() {
 
         const data = await res.json();
         setDelModal(false)
-        getVisitor()
+        getHost()
     };
 
 
 
 
     useEffect(() => {
-        getVisitor();
+        getHost();
     }, []);
     return (
 
         <div className="">
-            <header title="Visitors" />
+            <header title="Hosts" />
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
@@ -168,7 +169,7 @@ export default function Visitors() {
                                                     <div className="flex items-center justify-between p-4 border-b rounded-t md:p-5">
 
                                                         <h3 className="text-xl font-semibold text-gray-900">
-                                                            Edit Visitor
+                                                            Edit Host
                                                         </h3>
                                                         <button onClick={closeModal}
                                                             type="button"
@@ -217,22 +218,34 @@ export default function Visitors() {
                                                                 />
                                                             </div>
                                                             <div className="mb-5">
-                                                                <input htmlFor="company" />
+                                                                <label htmlFor="department" />
                                                                 <input
-                                                                    id="company"
+                                                                    id="department"
                                                                     type="text"
                                                                     required
                                                                     placeholder="XYZ Limited"
                                                                     autoComplete="off"
-                                                                    value={formData.company}
-                                                                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                                                                    value={formData.department}
+                                                                    onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                                                                />
+                                                            </div>
+                                                            <div className="mb-5">
+                                                                <label htmlFor="position" />
+                                                                <input
+                                                                    id="position"
+                                                                    type="text"
+                                                                    required
+                                                                    placeholder="XYZ Limited"
+                                                                    autoComplete="off"
+                                                                    value={formData.position}
+                                                                    onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                                                                 />
                                                             </div>
                                                         </form>
                                                     </div>
                                                     <div className="flex items-center justify-center p-4 border-t border-gray-200 rounded-b md:p-5">
                                                         {isAdd && popup && (
-                                                            <button onClick={createVisitor} type="submit" className="primary-btn">
+                                                            <button onClick={createHost} type="submit" className="primary-btn">
                                                                 Create
                                                             </button>
                                                         )}
@@ -240,7 +253,7 @@ export default function Visitors() {
                                                         {isUpdate && popup &&  (
                                                             <button
                                                               
-                                                                onClick={() => updateVisitor(visitorId)}
+                                                                onClick={() => updateHost(hostId)}
                                                                 className="primary-btn"
                                                             >
                                                                 Update
@@ -277,24 +290,26 @@ export default function Visitors() {
                                         <th scope="col" className="px-6 py-3">Full Name</th>
                                         <th scope="col" className="px-6 py-3">Email</th>
                                         <th scope="col" className="px-6 py-3">Phone Number</th>
-                                        <th scope="col" className="px-6 py-3">Company</th>
+                                        <th scope="col" className="px-6 py-3">Department</th>
+                                        <th scope="col" className="px-6 py-3">Position</th>
                                         <th scope="col" className="px-6 py-3">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {visitorData ? (
-                                        visitorData.map((visitor, id) => (
+                                    {hostData ? (
+                                        hostData.map((host, id) => (
                                             <tr key={id} className="bg-white border-b">
                                                 <td className="p-4">
                                                     <div className="flex items-center"></div>
                                                 </td>
-                                                <td className="px-6 py-3">{visitor.name}</td>
-                                                <td className="px-6 py-3">{visitor.email}</td>
-                                                <td className="px-6 py-3">{visitor.phone}</td>
-                                                <td className="px-6 py-3">{visitor.company}</td>
+                                                <td className="px-6 py-3">{host.name}</td>
+                                                <td className="px-6 py-3">{host.email}</td>
+                                                <td className="px-6 py-3">{host.phone}</td>
+                                                <td className="px-6 py-3">{host.department}</td>
+                                                <td className="px-6 py-3">{host.position}</td>
                                                 <td className="px-6 py-3 flex space-x-2">
                                                     <button onClick={() => {
-                                                        getId(visitor.id)
+                                                        getId(host.id)
                                                         setIsUpdate(true);
                                                         showModal();
                                                     }}
@@ -321,7 +336,7 @@ export default function Visitors() {
                                                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                                             </svg>
                                                                             <h3 className="mb-5 text-lg font-normal text-gray-500" >message</h3>
-                                                                            <button onClick={() => deleteVisitor(visitor.id)} type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+                                                                            <button onClick={() => deleteHost(host.id)} type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
                                                                                 delete
                                                                             </button>
                                                                             <button onClick={() => setDelModal(false)} type="button" className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">

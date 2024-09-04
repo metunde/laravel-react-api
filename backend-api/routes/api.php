@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HostController;
 use App\Http\Controllers\VisitorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +15,7 @@ Route::get('/', function(){
 });
 
 Route::apiResource('visitor', VisitorController::class);
+Route::apiResource('host', HostController::class);
 
 Route::Post('/register',[AuthController::class, 'register']);
 Route::Post('/login',[AuthController::class, 'login']);

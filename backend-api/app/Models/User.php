@@ -49,4 +49,8 @@ class User extends Authenticatable
     public function visitor(){
         return $this->hasMany(Visitor::class);
     }
+
+    public function host(){
+        return $this->hasMany(Host::class);
+    }
 }
